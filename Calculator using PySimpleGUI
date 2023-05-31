@@ -1,0 +1,99 @@
+import PySimpleGUI as sg
+
+sg.theme('LightGreen8')
+sg.set_options(font='Calibre')
+
+layout = [
+    [sg.Input(key='-INPUT-', font="Franklin", pad=(10, 20))],
+    [sg.Button('Clear', size=(4, 2)), sg.Button('<<', size=(4, 2)), sg.Button('%', size=(4, 2)),
+     sg.Button('/', size=(4, 2))],
+    [sg.Button('7', size=(4, 2)), sg.Button('8', size=(4, 2)), sg.Button('9', size=(4, 2)),
+     sg.Button('*', size=(4, 2))],
+    [sg.Button('4', size=(4, 2)), sg.Button('5', size=(4, 2)), sg.Button('6', size=(4, 2)),
+     sg.Button('-', size=(4, 2))],
+    [sg.Button('1', size=(4, 2)), sg.Button('2', size=(4, 2)), sg.Button('3', size=(4, 2)),
+     sg.Button('+', size=(4, 2))],
+    [sg.Button('0', size=(4, 2)), sg.Button('.', size=(4, 2)), sg.Button('=', size=(4, 2)),
+     sg.Button('Enter', size=(4, 2))]
+]
+window = sg.Window('Calculator', layout, size=(237, 350))
+current_num = []
+full_op = []
+num_string = ''
+
+
+def l_s(s):
+    # initialize an empty string
+    str1 = ""
+
+    # traverse in the string
+    for ele in s:
+        str1 += ele
+
+    # return string
+    return str1
+
+
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED:
+        break
+
+    if event in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']:
+        current_num.append(event)
+        num_string = ''.join(current_num)
+        window['-INPUT-'].update(num_string)
+
+    if event in ['/', '*', '-', '+', '%']:
+        full_op.append(''.join(current_num))
+        full_op.append(event)
+        current_num = []
+    if event == 'Enter':
+        full_op.append(''.join(current_num))
+
+        if full_op[1] == '+':
+            result = int(full_op[0]) + int(full_op[2])
+            window['-INPUT-'].update(result)
+            if event == '=':
+                window['-INPUT-'].update(result)
+                full_op = []
+                current_num = []
+
+        elif full_op[1] == '-':
+            result = int(full_op[0]) - int(full_op[2])
+            window['-INPUT-'].update(result)
+
+        elif full_op[1] == '*':
+            result = float(full_op[0]) * float(full_op[2])
+            window['-INPUT-'].update(result)
+
+        elif full_op[1] == '/':
+            result = int(full_op[0]) / int(full_op[2])
+            window['-INPUT-'].update(result)
+
+        full_op = []
+        current_num = []
+    if event == '%':
+        full_op.append(''.join(current_num))
+        result = int(full_op[0]) / 100
+        window['-INPUT-'].update(result)
+        if full_op[1] == '-':
+            result = int(full_op[0]) - (int(full_op[2]) / 100) * int(full_op[0])
+            window['-INPUT-'].update(result)
+            if event == '=':
+                window['-INPUT-'].update(result)
+                full_op = []
+                current_num = []
+        full_op = []
+        current_num = []
+
+    if event == 'Clear':
+        current_num = []
+        full_op = []
+        window['-INPUT-'].update('')
+    if event == '<<':
+        if len(current_num):
+            current_num = current_num[:-1]
+            window['-INPUT-'].update(l_s(current_num))
+
+window.close()
