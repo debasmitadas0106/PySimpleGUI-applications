@@ -80,6 +80,9 @@ while True:
         if full_op[1] == '-':
             result = int(full_op[0]) - (int(full_op[2]) / 100) * int(full_op[0])
             window['-INPUT-'].update(result)
+        if full_op[1]=='*':
+            result = int(full_op[0])* (int(full_op[2])/100)
+            window['-INPUT-'].update(result)
             if event == '=':
                 window['-INPUT-'].update(result)
                 full_op = []
